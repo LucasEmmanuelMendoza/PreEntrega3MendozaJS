@@ -170,7 +170,7 @@ function agregarProducto(){
       let nuevoId = productosStorage.length + 1;
 
       btnACeptarDatos.onclick = () =>{
-        let prodNuevo = {id:nuevoId,nombre:nombre1,foto:foto1.value, categoria:categoria1.value, precio: precio1.value,cantidad:cant1.value};
+        let prodNuevo = {id:nuevoId,nombre:nombre1,foto:foto1.value, categoria:categoria1.value, precio:parseFloat(precio1.value),cantidad:cant1.value};
 
         productosStorage.push(prodNuevo);
         localStorage.setItem('mod', 'si');
