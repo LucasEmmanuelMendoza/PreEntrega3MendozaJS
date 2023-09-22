@@ -1,0 +1,149 @@
+/* ======= SECCIÓN CONOCENOS ======= */
+
+@mixin ff-texto{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:larger;
+}
+
+main{
+    .intro{
+        .img-intro{
+            height: 100vh;
+            background-image: url(/imgs/aboutPage4.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    
+        h1{ 
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 40%;
+            text-align: center; 
+            background-color: black;
+        }
+        
+        .sobreNosotros{
+            @include tablet{ 
+                margin-top: 5%;
+            }
+    
+            h2{
+                font-size: 3.5rem; 
+                overflow-wrap: break-word;
+            }
+    
+            &__texto1, &__texto2{
+                @include ff-texto(); 
+                font-weight: 700;
+            }
+        }
+    
+    }
+}
+
+.quienesSomos{
+    overflow-wrap: break-word;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+
+    &__img{
+        object-fit: cover;
+    }
+
+    &__texto{
+        @include ff-texto();
+        font-weight: 700;
+
+        .titulo{ 
+            color: $C-colorTitulo; 
+            font-size: 3rem; 
+            overflow-wrap: break-word;
+            font-weight: 300;
+        }
+    }
+}
+
+.nuestroEquipamiento{
+    h2{
+        font-size: 3rem; 
+        overflow-wrap: break-word;
+    }
+
+    .description{
+        p{
+            @include ff-texto();
+            font-weight: 800;
+            
+            .titulo{ 
+                color: $C-colorTitulo; 
+                font-size: 3rem; 
+                overflow-wrap: break-word;
+                font-weight: 300;
+            }
+        }
+    }
+}
+
+.comunidad{
+    border-radius: 1rem;
+    height: 20rem;
+    margin: 1.5rem;
+    background-image: url(/imgs/aboutPage3.jpg);
+    background-position: center;
+    color: $C-colorTitulo; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:space-around;
+
+    h2{
+        color: rgb(7, 6, 6);
+        font-size: 1.4rem;
+        animation-name: animacion;
+        animation-duration: 7s;
+        animation-iteration-count: infinite;
+    }
+
+    p{  
+        font-size: large; 
+        font-weight: 600;
+        margin-right: 10%;
+        margin-left: 10%;
+
+        @include tablet{
+            font-family:sans-serif;
+            color: rgb(246, 246, 246); 
+            font-size: large;
+            font-style: oblique;
+            text-transform: uppercase;
+        }
+    }
+
+    form{
+        margin-top: -2rem;
+    }
+        
+}
+
+@keyframes animacion{
+    0%{
+        background-color:skyblue ;
+    }
+
+    25%{
+        background-color: red;
+    }
+
+    50%{
+        background-color: gold;
+    }
+
+    75%{
+        background-color: greenyellow;
+    }
+
+    100%{
+        background-color: blueviolet;
+    }
+}
+    
+ 

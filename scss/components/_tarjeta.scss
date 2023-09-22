@@ -1,0 +1,73 @@
+/*TARJETA*/
+@mixin tarjetaCuerpo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@mixin tarjetaImagen{
+    height: 70%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 1rem;
+}
+
+.contenedorTarjeta{
+    :hover{
+        transform: translateY(.2rem);
+    }
+}
+
+.tarjeta{
+    box-shadow: 10px 10px 10px rgb(9, 54, 3);
+    width: 25rem;
+    
+    @media (max-width: 768px){
+        width: 100%;
+    }
+
+    height: 30rem;
+
+    border-radius: 2rem;
+
+    &__cuerpo{
+        @include tarjetaCuerpo;
+    }
+
+    &__titulo{
+        margin-top: .7rem;
+    }
+
+    &__imagen{
+        @include tarjetaImagen;
+    }
+}
+
+.tarjeta-producto{
+    border: 0.1rem  solid white;
+    width: 18rem;
+    height: 25rem;
+
+    border-radius: 1rem;
+
+    &__cuerpo{ 
+        @include tarjetaCuerpo;
+            &__titulo{
+                margin-top: .2rem;
+                margin-bottom: -.3rem;
+        }
+    }
+
+    &__imagen{
+        @include tarjetaImagen;
+        margin-top: .7rem;        
+    }
+    
+    &__precio{
+        margin: .4rem;
+        font-size: large;
+        font-weight: 500;
+    }
+}
+
+ 

@@ -1,0 +1,51 @@
+/*CONTACTO*/
+main{
+    .contacto{
+        padding: 1rem;
+        width: 100%;
+        h1{
+            text-align: center;
+            font-weight: 700;
+        }
+    }
+
+    .contenedor-form-datos{
+        border-radius: .5rem;
+    }
+
+    .contenedor-formulario{
+        form{
+            background-image: url(/imgs/3D-parts-on-a-table-dark\ \(1\).jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: white;
+            height: 30rem;
+            width: 100%;
+            
+            overflow:hidden;
+            
+            @include tablet{
+                display: grid;
+                /*2 col - 3 filas*/
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr 2fr;
+                .mensaje{
+                    grid-row: span 2;
+                    grid-column: span 2;
+                    .msj{
+                        width: 80%;
+                        height: 60%;
+                    }
+                }
+            }
+        }
+    }
+
+    .datos{
+        span{
+            color: $C-colorTitulo; 
+            font-size: large;
+            font-weight: 500;
+        }
+    }
+}

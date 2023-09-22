@@ -1,0 +1,19 @@
+/*FOOTER*/ 
+$footerSize: 1.5rem;
+
+footer{
+    .redes__logos{
+        &__logo{
+            width: $footerSize;
+            height: $footerSize; 
+            font-size: 23rem;
+        }
+    }
+}
+
+.redes{
+    img{
+        width: $footerSize;
+        height: $footerSize;
+    }
+}
