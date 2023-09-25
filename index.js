@@ -62,7 +62,15 @@ function agregarAlCarrito(producto){
     console.clear();
   
     const prodUpper = producto.nombre.toUpperCase();
-    alert('Agregaste '+ prodUpper +' al carro');
+    Swal.fire('Agregaste '+ prodUpper +' al carro')
+    Swal.fire({
+      title: 'Agregaste '+ prodUpper +' al carro',
+      //text: 'Modal with a custom image.',
+      imageUrl: producto.foto,
+      imageHeight: 400,
+      imageAlt: 'Custom image',
+    })
+    //alert('Agregaste '+ prodUpper +' al carro');
   }
 }
 
@@ -91,7 +99,11 @@ function renderizarProductos(listaProductos){
         const prodACarro = listaProductos.find((producto) => producto.id == boton.id);
         agregarAlCarrito(prodACarro);
       }else{
-        alert('Regístrese para agregar al carro');
+        Swal.fire({
+          icon: 'error',
+          title: 'Ningún usuario encontrado',
+          text: 'Inicie sesión para agregar al carro',
+        })
       }
     })
   }
