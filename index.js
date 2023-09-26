@@ -62,7 +62,6 @@ function agregarAlCarrito(producto){
     console.clear();
   
     const prodUpper = producto.nombre.toUpperCase();
-    Swal.fire('Agregaste '+ prodUpper +' al carro')
     Swal.fire({
       title: 'Agregaste '+ prodUpper +' al carro',
       //text: 'Modal with a custom image.',
@@ -84,7 +83,7 @@ function renderizarProductos(listaProductos){
         <div class="tarjeta-producto__cuerpo">
           <h5 class="tarjeta-producto__cuerpo__titulo">${prod.nombre}</h5>
           <p class="tarjeta-producto__precio">$ ${prod.precio}</p>
-          <button id=${prod.id} class="btn">Agregar al carro</button>
+          <button id=${prod.id} class="btn btn1">Agregar al carro</button>
         </div>
       </div>
       `
@@ -92,7 +91,7 @@ function renderizarProductos(listaProductos){
   }
 
   //Botones:
-  let botones = document.getElementsByClassName('btn');
+  let botones = document.getElementsByClassName('btn1');
   for(const boton of botones){
     boton.addEventListener('click', () =>{ 
       if(localStorage.getItem('ingresoActivo') == 'comprador'){
@@ -107,6 +106,7 @@ function renderizarProductos(listaProductos){
       }
     })
   }
+  
 }
  
 renderizarProductos(JSON.parse(localStorage.getItem('productos')));
@@ -119,91 +119,129 @@ botonBackModStock.className = "btn";
 botonBackModStock.innerText = "Volver";
 botonBackModStock.addEventListener('click', modificarStock);
 
+function agregarNuevoProducto(nombreIngresado){
+  if(nombreIngresado != null){
+    let productosStorage = JSON.parse(localStorage.getItem('productos'));
+
+    seccionIngreso.innerHTML = '';
+    seccionIngreso.innerHTML += 'Agregar nuevo producto';
+    seccionIngreso.innerHTML +='<br></br>';
+    seccionIngreso.innerHTML += `Nombre: ${nombreIngresado.value}`;
+    seccionIngreso.innerHTML +='<br></br>';
+  
+    seccionIngreso.innerHTML += '<label for="cantProd">Ingrese la cantidad de unidades</label>';
+    seccionIngreso.innerHTML += '<input type="number" id="cantProd"><br>';
+    let inputCant = document.getElementById('cantProd');
+
+    seccionIngreso.innerHTML += '<label for="categoriaProd">Ingrese la categoria del producto</label>';
+    seccionIngreso.innerHTML += '<input type="text" id="categoriaProd"><br>';
+    let categoria1 = document.getElementById('categoriaProd');
+
+    seccionIngreso.innerHTML += '<label for="precioProd">Ingrese el precio del producto</label>';
+    seccionIngreso.innerHTML += '<input type="number" id="precioProd"><br>';
+    let precio1 = document.getElementById('precioProd');
+  
+    seccionIngreso.innerHTML += '<label for="fotoProd">Ingrese la foto del producto (link)</label>';
+    seccionIngreso.innerHTML += '<input type="text" id="fotoProd"><br>';
+    let foto1 = document.getElementById('fotoProd');
+  
+    seccionIngreso.innerHTML += '<small id="msjError"></small>';
+  
+    seccionIngreso.innerHTML += '<button id="aceptarDatos" class="btn">Aceptar</button>';
+    let btnACeptarDatos = document.getElementById('aceptarDatos');
+  
+    let nombre1 = nombreIngresado.value;
+  
+    let nuevoId = productosStorage.length + 1;
+  //
+    btnACeptarDatos.onclick = () =>{
+  
+      if(nombre1.length > 4 && parseInt(cant1.value) > 0 && categoria1.value.length > 4 && parseFloat(precio1.value) > 0){
+        let prodNuevo = {id:nuevoId,nombre:nombre1,foto:foto1.value, categoria:categoria1.value, precio:parseFloat(precio1.value),cantidad:cant1.value};
+  
+        productosStorage.push(prodNuevo);
+        localStorage.setItem('mod', 'si');
+        localStorage.setItem('productos', JSON.stringify(productosStorage));
+        Swal.fire({
+          icon: 'success',
+          title: 'Nuevo producto agregado',
+        })
+        modificarStock();
+      }else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Asegúrese de completar todos los campos antes de continuar',
+        })
+        agregarNuevoProducto(nombreIngresado);
+      }
+    }
+  }
+
+}
+
 function agregarProducto(){
   let existe = 'no';
   seccionIngreso.innerHTML = '';
   
-  seccionIngreso.innerHTML += '<label for="nombreProd">Ingrese nombre del producto</label>';
+  seccionIngreso.innerHTML += '<label for="nombreProd">Ingrese el nombre del producto</label>';
   seccionIngreso.innerHTML += '<input type="text" id="nombreProd"></input>';
   seccionIngreso.innerHTML += '<button id="aceptarNombre" class="btn">Aceptar</button>';
 
   let botonProd = document.getElementById('aceptarNombre');
   let nombreIngresado = document.getElementById('nombreProd');
 
-  botonProd.onclick = () =>{
-  let productosStorage = JSON.parse(localStorage.getItem('productos'));
+    botonProd.onclick = () =>{
 
-  console.log(productosStorage);
+      //if()
+      let productosStorage = JSON.parse(localStorage.getItem('productos'));
 
-    seccionIngreso.innerHTML = '';
-    for(const prod of productosStorage){
-      if(prod.nombre == nombreIngresado.value){//si existe el prod en productos, modifico la cantidad
-        seccionIngreso.innerHTML += '<input type="number" id="cant">Ingrese la cantidad</input>';
-        seccionIngreso.innerHTML += '<button id="aceptarCant">Aceptar</button>'
-        existe = 'si';
-        let botonAceptar = document.getElementById('aceptarCant');
-        botonAceptar.onclick = () =>{
-          let cantidad = document.getElementById('cant');
-          prod.cantidad += parseInt(cantidad.value);
-          localStorage.setItem('productos', JSON.stringify(productosStorage));
-        }
-        localStorage.setItem('mod', 'si');
-        break;
-      }
-    }
-  
-    if(existe == 'no'){//si no existe el prod en el carro, lo creo y lo agrego
-      seccionIngreso.innerHTML += "Agregar nuevo producto";
-      seccionIngreso.innerHTML +='<br></br>';
-      seccionIngreso.innerHTML += `Nombre: ${nombreIngresado.value}`;
-      seccionIngreso.innerHTML +='<br></br>';
-
-      seccionIngreso.innerHTML += '<label for="cantProd">Ingrese la cantidad de unidades a ingresar</label>';
-      seccionIngreso.innerHTML += '<input type="number" id="cantProd">';
+      console.log(productosStorage);
       
-      seccionIngreso.innerHTML += '<label for="categoriaProd">Ingrese la categoria del producto</label>';
-      seccionIngreso.innerHTML += '<input type="text" id="categoriaProd">';
-     
-      seccionIngreso.innerHTML += '<label for="precioProd">Ingrese el precio del producto</label>';
-      seccionIngreso.innerHTML += '<input type="number" id="precioProd">';
-     
-      seccionIngreso.innerHTML += '<label for="fotoProd">Ingrese la foto del producto (link)</label>';
-      seccionIngreso.innerHTML += '<input type="text" id="fotoProd">';
-     
-      seccionIngreso.innerHTML += '<button id="aceptarDatos">Aceptar</button>';
-      let btnACeptarDatos = document.getElementById('aceptarDatos');
-
-      let nombre1 = nombreIngresado.value;
-      let cant1 = document.getElementById('cantProd');
-      let categoria1 = document.getElementById('categoriaProd');
-      let precio1 = document.getElementById('precioProd');
-      let foto1 = document.getElementById('fotoProd');
-
-      let nuevoId = productosStorage.length + 1;
-
-      btnACeptarDatos.onclick = () =>{
-        let prodNuevo = {id:nuevoId,nombre:nombre1,foto:foto1.value, categoria:categoria1.value, precio:parseFloat(precio1.value),cantidad:cant1.value};
-
-        productosStorage.push(prodNuevo);
-        localStorage.setItem('mod', 'si');
-        localStorage.setItem('productos', JSON.stringify(productosStorage));
-      }
-
-    }
-    //actualizo los productos del storage
-    renderizarProductos(JSON.parse(localStorage.getItem('productos')));
+      if(nombreIngresado.value != null && nombreIngresado.value.trim() != ""){
+        
+        seccionIngreso.innerHTML = '';
+        for(const prod of productosStorage){
+          if(prod.nombre == nombreIngresado.value){//si existe el prod en productos, modifico la cantidad
+            seccionIngreso.innerHTML += '<input type="number" id="cant">Ingrese la cantidad</input>';
+            seccionIngreso.innerHTML += '<button id="aceptarCant">Aceptar</button>'
+            existe = 'si';
+            let botonAceptar = document.getElementById('aceptarCant');
+            botonAceptar.onclick = () =>{
+              let cantidad = document.getElementById('cant');
+              prod.cantidad += parseInt(cantidad.value);
+              localStorage.setItem('productos', JSON.stringify(productosStorage));
+            }
+            localStorage.setItem('mod', 'si');
+            break;
+          }
+        }
+      
+        if(existe == 'no'){//si no existe el prod en el carro, lo creo y lo agrego
+          agregarNuevoProducto(nombreIngresado);
     
-  }
-  
-  seccionIngreso.appendChild(botonBackModStock);
-}
+        }//if existe == no
+      }else{
+        Swal.fire({
+          icon: 'error',
+          text: 'Ingrese un nombre válido',
+        })
+        agregarProducto();
+      }
+          //actualizo los productos del storage
+          renderizarProductos(JSON.parse(localStorage.getItem('productos')));
+        }
+        seccionIngreso.appendChild(botonBackModStock);
+      }//btnAceptar
 
 function eliminarProducto(){
   seccionIngreso.innerHTML = '';
+
   
+  
+
+
   seccionIngreso.appendChild(botonBackModStock);
 }
-
 
 function modificarStock (){
   if(seccionIngreso != null){
@@ -232,46 +270,59 @@ function aumentarPrecios(){
 
     let porcentaje = document.getElementById('porcentaje');
 
-    let botonAceptar = document.getElementById('botonAceptar');
+    let btnAceptar = document.getElementById('botonAceptar');
 
-    /**/ botonAceptar.onclick = () =>{
+    /**/ btnAceptar.onclick = () =>{
       //actualizo el precio de los productos
-      const arrayMod = array.map(producto => {
-        if(porcentaje != null && porcentaje != 0 && porcentaje.value != ''){
-          return{
-            id: producto.id,
-            nombre: producto.nombre,
-            foto: producto.foto,
-            categoria: producto.categoria,
-            precio: producto.precio + (producto.precio * parseFloat(porcentaje.value) / 100),
-            cantidad: producto.cantidad
-          }
-        }
-      });
-      localStorage.setItem('productos', JSON.stringify(arrayMod));
-
-      //actualizo los precios del carrito:
-      if(JSON.parse(localStorage.getItem('Carrito')) != null){
-        let arrayCarrito = JSON.parse(localStorage.getItem('Carrito'));
-
-        const carroMod = arrayCarrito.map(producto =>{
-          return{
-            id: producto.id,
-            nombre: producto.nombre,
-            foto: producto.foto,
-            categoria: producto.categoria,
-            precio: producto.precio + (producto.precio * parseInt(porcentaje.value) / 100),
-            cantidad: producto.cantidad
-          }
+      if(porcentaje != null && porcentaje.value != 0 && porcentaje.value != ''){
+        const arrayMod = array.map(producto => {
+            return{
+              id: producto.id,
+              nombre: producto.nombre,
+              foto: producto.foto,
+              categoria: producto.categoria,
+              precio: producto.precio + (producto.precio * parseFloat(porcentaje.value) / 100),
+              cantidad: producto.cantidad
+            }
+          
         });
+        localStorage.setItem('productos', JSON.stringify(arrayMod));
 
-        localStorage.setItem('Carrito', JSON.stringify(carroMod));
-      }
-    } 
+        //actualizo los precios del carrito:
+        if(JSON.parse(localStorage.getItem('Carrito')) != null){
+          let arrayCarrito = JSON.parse(localStorage.getItem('Carrito'));
 
-    localStorage.setItem('mod', 'si');
-    seccionIngreso.appendChild(botonBack);
+          const carroMod = arrayCarrito.map(producto =>{
+            return{
+              id: producto.id,
+              nombre: producto.nombre,
+              foto: producto.foto,
+              categoria: producto.categoria,
+              precio: producto.precio + (producto.precio * parseInt(porcentaje.value) / 100),
+              cantidad: producto.cantidad
+            }
+          });
+
+          localStorage.setItem('Carrito', JSON.stringify(carroMod));
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Precios modificados',
+        })
+        aumentarPrecios();
+
+        localStorage.setItem('mod', 'si');
+      }else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Ingrese un porcentaje válido',
+        })
+        aumentarPrecios();
+    }
+    }//fin btn
   }
+  seccionIngreso.appendChild(botonBack);
 }
 
 function cerrarSesion(){
