@@ -206,7 +206,6 @@ function agregarNuevoProducto(nombreIngresado){
       }
     }
   }
-
 }
 
 function agregarProducto(){
@@ -360,6 +359,22 @@ function cerrarSesion(){
 }
 
 function limpiarCarro(){
+
+  const arrProductos = JSON.parse(localStorage.getItem('productos'));
+  const arrCarrito = JSON.parse(localStorage.getItem('Carrito'));
+  
+  //Sumo la cantidad de cada producto del carro a los productos del stock
+  arrCarrito.forEach(elementCarro => {
+    for(const prod of arrProductos){
+      if(elementCarro.id == prod.id){
+        prod.cantidad += elementCarro.cantidad;
+        break;
+      }
+    }
+  });
+  //guardo el array en el storage;
+  localStorage.setItem('productos', JSON.stringify(arrProductos));
+
   localStorage.removeItem('Carrito');
 }
 
@@ -496,4 +511,3 @@ if(localStorage.getItem('ingresoActivo') == 'no'){
       break;
   }
 }
-
