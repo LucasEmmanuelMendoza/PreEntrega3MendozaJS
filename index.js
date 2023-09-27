@@ -36,7 +36,7 @@ function agregarAlCarrito(producto){
 
 function agregarAlCarrito(producto){
   if(producto != null){
-    if(JSON.parse(localStorage.getItem('Carrito')) != null){
+    if(JSON.parse(localStorage.getItem('Carrito')) != null){//si existe el carro
       let existeEnCarro = 'no';
       let carrito = JSON.parse(localStorage.getItem('Carrito'));
       
@@ -59,22 +59,33 @@ function agregarAlCarrito(producto){
       let arrayCarrito = [producto];
       localStorage.setItem('Carrito', JSON.stringify(arrayCarrito));
     }
-    console.clear();
-  
-    const prodUpper = producto.nombre.toUpperCase();
+    
+      /* disminuyo en 1 la cantidad del producto en el storage
+      ya tengo el objeto producto como parámetro, tengo que traer el array de productos del storage, buscar el producto, modificar
+      su cantidad y volver a guardar los productos*/
+
+      let arrayProds = JSON.parse(localStorage.getItem('productos'));
+      for(const elem of arrayProds){
+        if(elem.id == producto.id){
+          elem.cantidad -= 1;
+          localStorage.setItem('mod', 'si');
+          break;
+        }
+      }
+      localStorage.setItem('productos', JSON.stringify(arrayProds));
+
     Swal.fire({
-      title: 'Agregaste '+ prodUpper +' al carro',
-      //text: 'Modal with a custom image.',
+      title: 'Agregaste '+ producto.nombre.toUpperCase() +' al carro',
       imageUrl: producto.foto,
       imageHeight: 400,
       imageAlt: 'Custom image',
     })
-    //alert('Agregaste '+ prodUpper +' al carro');
   }
 }
 
 function renderizarProductos(listaProductos){
   //console.log(listaProductos);
+  let cantidadActual = 0;
   for(const prod of listaProductos){
     if(seccionProductos != null){
       seccionProductos.innerHTML += `
@@ -96,7 +107,27 @@ function renderizarProductos(listaProductos){
     boton.addEventListener('click', () =>{ 
       if(localStorage.getItem('ingresoActivo') == 'comprador'){
         const prodACarro = listaProductos.find((producto) => producto.id == boton.id);
-        agregarAlCarrito(prodACarro);
+
+        //si hay 1 o más cantidad de ese producto -> lo agrego al carro
+
+        let prodsStorage = JSON.parse(localStorage.getItem('productos'));
+
+        for(const elem of prodsStorage){
+          if(elem.id == prodACarro.id){
+            cantidadActual = elem.cantidad;
+            break;
+          }
+        }
+
+        if(parseInt(cantidadActual) > 0){
+          agregarAlCarrito(prodACarro);
+        }else{
+          Swal.fire({
+            icon: 'error',
+            title: 'No hay stock disponible para este producto',
+          })
+        }
+
       }else{
         Swal.fire({
           icon: 'error',
@@ -106,7 +137,6 @@ function renderizarProductos(listaProductos){
       }
     })
   }
-  
 }
  
 renderizarProductos(JSON.parse(localStorage.getItem('productos')));
