@@ -241,55 +241,101 @@ function agregarProducto(){
       }//btnAceptar
 
 function eliminarProducto(){
-  //Traigo prods del storage
-  //Muestro prods con id
-  //pido id del prod a eliminar
-  //muestro la cantidad disponible de stock actual
-  //valido que cantIngresada <= stock
-  //Elimino la cant ingresada en caso de que corresponda y else: sweetAlert
-  //Guardo los productos modificados en el storage en caso de que corresponda
 
-  seccionIngreso.innerHTML = '';
+  if(seccionIngreso != null){
 
-  let prods = JSON.parse(localStorage.getItem('productos'));
+    let existe = 'no';
 
-  seccionIngreso.innerHTML  += `
-  <table class="table table-striped ">
-    <thead class="table-dark">
-      <tr>
-        <td scope="col">ID</td>
-        <td scope="col"> - </td>
-        <td scope="col">Nombre</td>
-        <td scope="col">Cantidad</td>
-      </tr>
-    </thead>
-  </table>`;
-
-  for(const prod of prods){
-    if(prod.cantidad > 0){
-      seccionIngreso.innerHTML +=`
-      <table class="table table-dark">
-      <tbody>
-        <tr>
-          <th scope="row">${prod.id}</th>
-          <td class=""bg-black"><img src=${prod.foto} class="imgEliminar"></td>
-          <td>${prod.nombre}</td>
-          <td>${prod.cantidad}</td>
-        </tr>
-      </tbody>
-    </table>`;
-    }
-  }
-
-  seccionIngreso.innerHTML += '<label for="idProd">Ingrese el id</label>';
-  seccionIngreso.innerHTML += '<input type="number" id="idProd"></input>';
-  seccionIngreso.innerHTML += '<button id="btnId" class="btn">Aceptar</button>';
-
-  let campoId = document.getElementById('idProd');
-
+    seccionIngreso.innerHTML = '';
   
+    let prods = JSON.parse(localStorage.getItem('productos'));
+  
+    seccionIngreso.innerHTML  += `
+    <table class="table table-striped ">
+      <thead class="table-dark">
+        <tr>
+          <td scope="col">ID</td>
+          <td scope="col">   Imagen</td>
+          <td scope="col">Nombre</td>
+          <td scope="col">Cantidad</td>
+        </tr>
+      </thead>
+    </table>`;
+  
+    for(const prod of prods){
+      if(prod.cantidad > 0){
+        seccionIngreso.innerHTML +=`
+        <table class="table table-dark">
+        <tbody>
+          <tr>
+            <th scope="row">${prod.id}</th>
+            <td class=""bg-black"><img src=${prod.foto} class="imgEliminar"></td>
+            <td>${prod.nombre}</td>
+            <td>${prod.cantidad}</td>
+          </tr>
+        </tbody>
+      </table>`;
+      }
+    }
 
-  seccionIngreso.appendChild(botonBackModStock);
+    seccionIngreso.innerHTML += '<label for="idProd">Ingrese el id</label>';
+    seccionIngreso.innerHTML += '<input type="number" id="idProd"></input>';
+    seccionIngreso.innerHTML += '<button id="btnAceptarId" class="btn">Aceptar</button>';
+  
+    let campoId = document.getElementById('idProd');
+    let botonAceptarId = document.getElementById('btnAceptarId');
+  
+    botonAceptarId.onclick = () =>{
+      for(const prodStock of prods){
+        if(parseInt(campoId.value) == prodStock.id){//si coincide el id, muestro el producto y pido la cantidad a borrar
+          seccionIngreso.innerHTML = '';
+          seccionIngreso.innerHTML +=`
+          <table class="table table-dark">
+          <tbody>
+            <tr>
+              <th scope="row">${prodStock.id}</th>
+              <td class=""bg-black"><img src=${prodStock.foto} class="imgEliminar"></td>
+              <td>${prodStock.nombre}</td>
+              <td>${prodStock.cantidad}</td>
+            </tr>
+          </tbody>
+          </table>`;
+  
+          seccionIngreso.innerHTML += '<label for="cantProd">Ingrese la cantidad a borrar</label>';
+          seccionIngreso.innerHTML += '<input type="number" id="cantProd"></input>';
+          seccionIngreso.innerHTML += '<button id="btnAceptarCant" class="btn">Aceptar</button>';
+          
+          let campoCantidad = document.getElementById('cantProd');
+          let btnAceptarCant = document.getElementById('btnAceptarCant');
+          
+          btnAceptarCant.onclick = () =>{
+            if((parseInt(campoCantidad.value) <= prodStock.cantidad) && (parseInt(campoCantidad.value) > 0)){
+              prodStock.cantidad -= campoCantidad.value;//resto la cantidad de productos
+              localStorage.setItem('productos', JSON.stringify(prods))//modifico el storage
+            }else{
+              Swal.fire({
+                icon: 'error',
+                text: 'Ingrese una cantidad válida',
+              })
+              eliminarProducto();
+            }
+          }
+          existe = 'si';
+          break;
+        }
+      }
+  
+      if(existe == 'no'){
+        Swal.fire({
+          icon: 'error',
+          text: 'El id ingresado no corresponde a un producto del stock',
+        })
+        eliminarProducto();
+      }
+    }
+  
+    seccionIngreso.appendChild(botonBackModStock);
+  }
 }
 
 function modificarStock (){
