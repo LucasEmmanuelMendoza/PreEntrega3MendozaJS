@@ -15,26 +15,6 @@ botonBack.innerText = "Volver";
 const seccionProductos = document.getElementById('contenedor');
 
 function agregarAlCarrito(producto){
-
-  if(producto != null){
-    if(JSON.parse(localStorage.getItem('Carrito')) != null){ //Si existe el carrito, lo traigo, le agrego el prod y lo mando
-      let arrayGuardadoJSON = JSON.parse(localStorage.getItem('Carrito'));
-      arrayGuardadoJSON.push(producto);
-      localStorage.setItem('Carrito', JSON.stringify(arrayGuardadoJSON));
-    }else{ //Si no existe, lo creo y le agrego el producto
-      let arrayCarrito = [producto];
-      const objetoAJSON = JSON.stringify(arrayCarrito);
-      localStorage.setItem('Carrito', objetoAJSON);
-    }
-    console.clear();
-    console.log(JSON.parse(localStorage.getItem('Carrito')));
-  
-    const prodUpper = producto.nombre.toUpperCase();
-    alert('Agregaste '+ prodUpper +' al carro');
-  }
-}
-
-function agregarAlCarrito(producto){
   if(producto != null){
     if(JSON.parse(localStorage.getItem('Carrito')) != null){//si existe el carro
       let existeEnCarro = 'no';
@@ -107,8 +87,6 @@ function renderizarProductos(listaProductos){
     boton.addEventListener('click', () =>{ 
       if(localStorage.getItem('ingresoActivo') == 'comprador'){
         const prodACarro = listaProductos.find((producto) => producto.id == boton.id);
-
-        //si hay 1 o más cantidad de ese producto -> lo agrego al carro
 
         let prodsStorage = JSON.parse(localStorage.getItem('productos'));
 
@@ -263,11 +241,53 @@ function agregarProducto(){
       }//btnAceptar
 
 function eliminarProducto(){
+  //Traigo prods del storage
+  //Muestro prods con id
+  //pido id del prod a eliminar
+  //muestro la cantidad disponible de stock actual
+  //valido que cantIngresada <= stock
+  //Elimino la cant ingresada en caso de que corresponda y else: sweetAlert
+  //Guardo los productos modificados en el storage en caso de que corresponda
+
   seccionIngreso.innerHTML = '';
 
-  
-  
+  let prods = JSON.parse(localStorage.getItem('productos'));
 
+  seccionIngreso.innerHTML  += `
+  <table class="table table-striped ">
+    <thead class="table-dark">
+      <tr>
+        <td scope="col">ID</td>
+        <td scope="col"> - </td>
+        <td scope="col">Nombre</td>
+        <td scope="col">Cantidad</td>
+      </tr>
+    </thead>
+  </table>`;
+
+  for(const prod of prods){
+    if(prod.cantidad > 0){
+      seccionIngreso.innerHTML +=`
+      <table class="table table-dark">
+      <tbody>
+        <tr>
+          <th scope="row">${prod.id}</th>
+          <td class=""bg-black"><img src=${prod.foto} class="imgEliminar"></td>
+          <td>${prod.nombre}</td>
+          <td>${prod.cantidad}</td>
+        </tr>
+      </tbody>
+    </table>`;
+    }
+  }
+
+  seccionIngreso.innerHTML += '<label for="idProd">Ingrese el id</label>';
+  seccionIngreso.innerHTML += '<input type="number" id="idProd"></input>';
+  seccionIngreso.innerHTML += '<button id="btnId" class="btn">Aceptar</button>';
+
+  let campoId = document.getElementById('idProd');
+
+  
 
   seccionIngreso.appendChild(botonBackModStock);
 }

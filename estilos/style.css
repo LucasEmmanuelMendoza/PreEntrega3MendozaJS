@@ -375,4 +375,10 @@ main .container .categorias li :hover {
   }
 }
 
+/*--------------*/
+.imgEliminar{
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
 /*# sourceMappingURL=style.css.map */
