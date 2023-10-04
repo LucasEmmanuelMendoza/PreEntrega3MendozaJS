@@ -128,93 +128,175 @@ btnBackAgregarProducto.classList.add('btn');
 btnBackAgregarProducto.addEventListener('click', agregarProducto);
 
 function agregarNuevoProducto(){
-  
-    if(seccionIngreso != null){
-      let productosStorage = JSON.parse(localStorage.getItem('productos'));
+  if(seccionIngreso != null){
+    let productosStorage = JSON.parse(localStorage.getItem('productos'));
 
-      seccionIngreso.innerHTML = '';
-      seccionIngreso.innerHTML += 'Agregar nuevo producto';
-      
-      const inputNombre = document.createElement('input');
-      inputNombre.setAttribute('type', 'text');
-      inputNombre.setAttribute('id', 'nombreProd');
-      inputNombre.setAttribute('placeholder', 'Ingrese el nombre del producto');
-      inputNombre.classList.add('inputsAdd');
-      seccionIngreso.appendChild(inputNombre);
-
-      const inputCategoria = document.createElement('input');
-      inputCategoria.setAttribute('type', 'text');
-      inputCategoria.setAttribute('id', 'categoriaProd');
-      inputCategoria.setAttribute('placeholder', 'Ingrese la categoría');
-      inputCategoria.classList.add('inputsAdd');
-      seccionIngreso.appendChild(inputCategoria);
-
-      const inputCantidad = document.createElement('input');
-      inputCantidad.setAttribute('type', 'number');
-      inputCantidad.setAttribute('id', 'cantProd');
-      inputCantidad.setAttribute('placeholder', 'Ingrese la cantidad de unidades');
-      inputCantidad.classList.add('inputsAdd');
-      seccionIngreso.appendChild(inputCantidad);
-      
-      const inputPrecio = document.createElement('input');
-      inputPrecio.setAttribute('type', 'number');
-      inputPrecio.setAttribute('id', 'precioProd');
-      inputPrecio.setAttribute('placeholder', 'Ingrese el precio');
-      inputPrecio.classList.add('inputsAdd');
-      seccionIngreso.appendChild(inputPrecio);
-
-      const inputFoto = document.createElement('input');
-      inputFoto.setAttribute('type', 'text');
-      inputFoto.setAttribute('id', 'fotoProd');
-      inputFoto.setAttribute('placeholder', 'Ingrese la foto (link)');
-      inputFoto.classList.add('inputsAdd');
-      seccionIngreso.appendChild(inputFoto);
-
-      const nuevoId = productosStorage.length + 1;
-
-      const btnAceptarDatos = document.createElement('button');
-      btnAceptarDatos.setAttribute('id', 'aceptarDatos');
-      btnAceptarDatos.classList.add('btn');
-      btnAceptarDatos.textContent = 'Aceptar';
-      seccionIngreso.appendChild(btnAceptarDatos);
-
-      seccionIngreso.appendChild(btnBackAgregarProducto);
-
-      btnAceptarDatos.onclick = () =>{
-        if((inputNombre.value).length > 2 && parseInt(inputCantidad.value) > 0 && (inputCategoria.value).length > 4 && parseFloat(inputPrecio.value) > 0){
-          let prodNuevo = {id:nuevoId, nombre:inputNombre.value, foto:inputFoto.value, categoria:inputCategoria.value, precio:parseFloat(inputPrecio.value), cantidad:parseInt(inputCantidad.value)};
+    seccionIngreso.innerHTML = '';
+    seccionIngreso.innerHTML += 'Agregar nuevo producto';
     
-          productosStorage.push(prodNuevo);
-          localStorage.setItem('mod', 'si');
-          localStorage.setItem('productos', JSON.stringify(productosStorage));
-          Swal.fire({
-            icon: 'success',
-            title: 'Nuevo producto agregado',
-          })
-        }else{
-          Swal.fire({
-            icon: 'error',
-            title: 'Asegúrese de completar todos los campos antes de continuar',
-          })
-          agregarNuevoProducto();
-        } 
-      }
-    } 
+    const inputNombre = document.createElement('input');
+    inputNombre.setAttribute('type', 'text');
+    inputNombre.setAttribute('id', 'nombreProd');
+    inputNombre.setAttribute('placeholder', 'Ingrese el nombre del producto');
+    inputNombre.classList.add('inputsAdd');
+    seccionIngreso.appendChild(inputNombre);
+
+    const inputCategoria = document.createElement('input');
+    inputCategoria.setAttribute('type', 'text');
+    inputCategoria.setAttribute('id', 'categoriaProd');
+    inputCategoria.setAttribute('placeholder', 'Ingrese la categoría');
+    inputCategoria.classList.add('inputsAdd');
+    seccionIngreso.appendChild(inputCategoria);
+
+    const inputCantidad = document.createElement('input');
+    inputCantidad.setAttribute('type', 'number');
+    inputCantidad.setAttribute('id', 'cantProd');
+    inputCantidad.setAttribute('placeholder', 'Ingrese la cantidad de unidades');
+    inputCantidad.classList.add('inputsAdd');
+    seccionIngreso.appendChild(inputCantidad);
+    
+    const inputPrecio = document.createElement('input');
+    inputPrecio.setAttribute('type', 'number');
+    inputPrecio.setAttribute('id', 'precioProd');
+    inputPrecio.setAttribute('placeholder', 'Ingrese el precio');
+    inputPrecio.classList.add('inputsAdd');
+    seccionIngreso.appendChild(inputPrecio);
+
+    const inputFoto = document.createElement('input');
+    inputFoto.setAttribute('type', 'text');
+    inputFoto.setAttribute('id', 'fotoProd');
+    inputFoto.setAttribute('placeholder', 'Ingrese la foto (link)');
+    inputFoto.classList.add('inputsAdd');
+    seccionIngreso.appendChild(inputFoto);
+
+    const nuevoId = productosStorage.length + 1;
+
+    const btnAceptarDatos = document.createElement('button');
+    btnAceptarDatos.setAttribute('id', 'aceptarDatos');
+    btnAceptarDatos.classList.add('btn');
+    btnAceptarDatos.textContent = 'Aceptar';
+    seccionIngreso.appendChild(btnAceptarDatos);
+
+    seccionIngreso.appendChild(btnBackAgregarProducto);
+
+    btnAceptarDatos.onclick = () =>{
+      if((inputNombre.value).length > 2 && parseInt(inputCantidad.value) > 0 && (inputCategoria.value).length > 1 && parseFloat(inputPrecio.value) > 0){
+        let prodNuevo = {id:nuevoId, nombre:inputNombre.value, foto:inputFoto.value, categoria:inputCategoria.value, precio:parseFloat(inputPrecio.value), cantidad:parseInt(inputCantidad.value)};
+  
+        productosStorage.push(prodNuevo);
+        localStorage.setItem('mod', 'si');
+        localStorage.setItem('productos', JSON.stringify(productosStorage));
+        Swal.fire({
+          icon: 'success',
+          title: 'Nuevo producto agregado',
+        })
+        agregarNuevoProducto();
+      }else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Asegúrese de completar todos los campos antes de continuar',
+        })
+        agregarNuevoProducto();
+      } 
+    }
+  } 
 }
 
+function agregarStock(producto){
+  if(seccionIngreso != null && producto != null){
+    let productosStorage = JSON.parse(localStorage.getItem('productos'));
+    for(const prod of productosStorage){
+      if(prod.id == producto.id){//si coincide el id, modifico la cantidad en el array del storage
+        seccionIngreso.innerHTML = '';//muestro el prod del storage
+        seccionIngreso.innerHTML += `
+        <table class="table table-dark">
+          <tbody>
+            <tr>
+              <th scope="row">${prod.id}</th>
+              <td class=""bg-black"><img src=${prod.foto} class="imgEliminar"></td>
+              <td>${prod.nombre}</td>
+              <td>${prod.cantidad}</td>
+            </tr>
+          </tbody>
+        </table>
+        `;
+        seccionIngreso.innerHTML += '<input type="number" class="inputs" id="cant">Ingrese la cantidad</input>';
+        seccionIngreso.innerHTML += '<button id="aceptarCant">Aceptar</button>';
+        let botonAceptar = document.getElementById('aceptarCant');
+
+        botonAceptar.onclick = () =>{
+          let cantidad = document.getElementById('cant');
+          if(cantidad.value > 0){//si la cantidad es valid, modifico el prod del for encontrado
+            prod.cantidad += parseInt(cantidad.value);
+            localStorage.setItem('productos', JSON.stringify(productosStorage));//guardo el array modificado
+            Swal.fire({
+              icon: 'success',
+              text: 'Stock modificado',
+            })
+          }else{
+            Swal.fire({
+              icon: 'error',
+              text: 'Ingrese una cantidad válida',
+            })
+          }
+          agregarStock(producto);
+        }
+        localStorage.setItem('mod', 'si');
+        break;
+      }//fin if
+    }//fin for 
+  }
+}//fin agregarStock
+
+function agegarProductoExistente(){
+  let productosStorage = JSON.parse(localStorage.getItem('productos'));
+  seccionIngreso.innerHTML = '';
+
+  for(const product of productosStorage){//muestro los productos
+    seccionIngreso.innerHTML += `
+    <table class="table table-dark">
+    <tbody>
+      <tr>
+        <th scope="row">${product.id}</th>
+        <td class=""bg-black"><img src=${product.foto} class="imgEliminar"></td>
+        <td>${product.nombre}</td>
+        <td>${product.cantidad}</td>
+      </tr>
+    </tbody>
+  </table>
+    `;
+  }
+
+  seccionIngreso.innerHTML += '<input type="text" class="inputs" id="idProd" placeholder="Ingrese el ID del producto"></input>';
+  seccionIngreso.innerHTML += '<button id="aceptarId" class="btn">Aceptar</button>';
+  let btnAceptarId = document.getElementById('aceptarId');
+
+  let idIngresado = document.getElementById('idProd');
+  
+  seccionIngreso.appendChild(btnBackAgregarProducto);
+
+  btnAceptarId.onclick = () =>{
+    if(idIngresado.value != null && idIngresado.value.trim() != ""){
+      //busco un producto que coincida con el id ingresado
+      const prodEncontrado = productosStorage.find((prod) => prod.id == idIngresado.value);
+      if(prodEncontrado == undefined){
+        Swal.fire({
+          icon: 'error',
+          text: 'El id ingresado no corresponde a un producto del stock',
+        })
+        agegarProductoExistente();
+      }else{
+        agregarStock(prodEncontrado);
+      }
+    }// aceptarId.onclick prod existente
+  }//fin agregarProductoExistente
+}
 function agregarProducto(){
   if(seccionIngreso != null){
     seccionIngreso.innerHTML = '';
     seccionIngreso.classList.add("gap-1");
-    
-    /* seccionIngreso.innerHTML += '<button class="btn" id="prodExiste">Producto existente</button>';
-    seccionIngreso.innerHTML += '<button class="btn" id="nuevoProd">Nuevo producto</button>';
-  
-    //let btnProdExiste = document.getElementById('prodExiste');
-    //let btnNuevoProd = document.getElementById('nuevoProd');  */
   
     const btnProdExiste = document.createElement('button');
-    //btnProdExiste.setAttribute('id', 'prodExiste');
     btnProdExiste.setAttribute('class', 'btn');
     btnProdExiste.textContent = "Producto existente";
     seccionIngreso.appendChild(btnProdExiste);
@@ -225,76 +307,8 @@ function agregarProducto(){
     seccionIngreso.appendChild(btnNuevoProd);
   
     btnProdExiste.onclick = () =>{
-      let productosStorage = JSON.parse(localStorage.getItem('productos'));
-      seccionIngreso.innerHTML = '';
-  
-      for(const product of productosStorage){
-        seccionIngreso.innerHTML += `
-        <table class="table table-dark">
-        <tbody>
-          <tr>
-            <th scope="row">${product.id}</th>
-            <td class=""bg-black"><img src=${product.foto} class="imgEliminar"></td>
-            <td>${product.nombre}</td>
-            <td>${product.cantidad}</td>
-          </tr>
-        </tbody>
-      </table>
-        `;
-      }
-  
-      seccionIngreso.innerHTML += '<input type="text" class="inputs" id="idProd" placeholder="Ingrese el ID del producto"></input>';
-      seccionIngreso.innerHTML += '<button id="aceptarId" class="btn">Aceptar</button>';
-      let botonProd = document.getElementById('aceptarId');
-  
-      let idIngresado = document.getElementById('idProd');
-      
-      seccionIngreso.appendChild(btnBackAgregarProducto);
-  
-      botonProd.onclick = () =>{
-        if(idIngresado.value != null && idIngresado.value.trim() != ""){
-          seccionIngreso.innerHTML = '';
-          for(const prod of productosStorage){
-            if(prod.id == idIngresado.value){//si coincide el id, modifico la cantidad
-              seccionIngreso.innerHTML = '';
-              seccionIngreso.innerHTML += `
-              <table class="table table-dark">
-                <tbody>
-                  <tr>
-                    <th scope="row">${prod.id}</th>
-                    <td class=""bg-black"><img src=${prod.foto} class="imgEliminar"></td>
-                    <td>${prod.nombre}</td>
-                    <td>${prod.cantidad}</td>
-                  </tr>
-                </tbody>
-              </table>
-              `;
-              seccionIngreso.innerHTML += '<input type="number" class="inputs" id="cant">Ingrese la cantidad</input>';
-              seccionIngreso.innerHTML += '<button id="aceptarCant">Aceptar</button>'
-              let botonAceptar = document.getElementById('aceptarCant');
-              botonAceptar.onclick = () =>{
-                let cantidad = document.getElementById('cant');
-                prod.cantidad += parseInt(cantidad.value);
-                localStorage.setItem('productos', JSON.stringify(productosStorage));
-                Swal.fire({
-                  icon: 'success',
-                  text: 'Stock modificado',
-                })
-                menuVendedor();
-              }
-  
-              localStorage.setItem('mod', 'si');
-              break;
-            }
-          } 
-        }else{
-          Swal.fire({
-            icon: 'error',
-            text: 'El id ingresado no corresponde a un producto del stock',
-          })
-        }
-      }// aceptarId.onclick prod existente
-    }//btnProdExiste.onclick 
+      agegarProductoExistente();
+    } 
   
     btnNuevoProd.onclick = () =>{
       agregarNuevoProducto();
