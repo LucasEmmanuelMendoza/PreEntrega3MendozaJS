@@ -207,9 +207,15 @@ btnBackAddProdExistente.setAttribute('class', 'btn');
 btnBackAddProdExistente.addEventListener('click', agegarProductoExistente);
 btnBackAddProdExistente.textContent = "Volver";
 
-function agregarStock(producto){
+const btnBackEliminarProd = document.createElement('button');
+btnBackEliminarProd.setAttribute('class', 'btn');
+btnBackEliminarProd.textContent = "Volver";
+btnBackEliminarProd.addEventListener('click', eliminarProducto);
+
+function agregarOEliminarStockProducto(producto, agregarOEliminar){
   if(seccionIngreso != null && producto != null){
-    let productosStorage = JSON.parse(localStorage.getItem('productos'));
+    let productosStorage = JSON.parse(localStorage.getItem('productos'));//traigo los productos
+
     for(const prod of productosStorage){
       if(prod.id == producto.id){//si coincide el id, modifico la cantidad en el array del storage
         seccionIngreso.innerHTML = '';//muestro el prod del storage
@@ -225,42 +231,73 @@ function agregarStock(producto){
           </tbody>
         </table>
         `;
-        
-        let cantidad = document.createElement('input');
-        cantidad.setAttribute('class', 'inputs');
-        cantidad.setAttribute('placeholder', 'Ingrese la cantidad');
-        cantidad.setAttribute('type', 'number');
-        seccionIngreso.appendChild(cantidad);
+        const campoCantidad = document.createElement('input');
+        campoCantidad.setAttribute('class', 'inputs');
+        campoCantidad.setAttribute('type', 'number');
 
-        let botonAceptar = document.createElement('button');
-        botonAceptar.setAttribute('class', 'btn');
-        botonAceptar.textContent = "Aceptar";
-        seccionIngreso.appendChild(botonAceptar);
+  /*       if(agregarOEliminar == 'agregar'){
+          campoCantidad.setAttribute('placeholder', 'Ingrese las unidades a agregar');
+        }else{
+          campoCantidad.setAttribute('placeholder', 'Ingrese las unidades a eliminar');
+        } */
+        campoCantidad.setAttribute('placeholder', `Ingrese las unidades a ${agregarOEliminar}`);
+        seccionIngreso.appendChild(campoCantidad);
+    
+        const btnAceptarCant = document.createElement('button');
+        btnAceptarCant.setAttribute('class', 'btn');
+        btnAceptarCant.textContent = "Aceptar";
+        seccionIngreso.appendChild(btnAceptarCant);
 
-        botonAceptar.onclick = () =>{
-          if(cantidad.value > 0){//si la cantidad es valid, modifico el prod del for encontrado
-            prod.cantidad += parseInt(cantidad.value);
-            localStorage.setItem('productos', JSON.stringify(productosStorage));//guardo el array modificado
-            Swal.fire({
-              icon: 'success',
-              text: 'Stock modificado',
-            })
-          }else{
-            Swal.fire({
-              icon: 'error',
-              text: 'Ingrese una cantidad válida',
-            })
-          }
-          agregarStock(producto);
+        if(agregarOEliminar == 'agregar'){
+          seccionIngreso.appendChild(btnBackAddProdExistente);
+        }else{
+          seccionIngreso.appendChild(btnBackEliminarProd);
+        }
+
+        btnAceptarCant.onclick = () =>{
+          switch (agregarOEliminar){
+            case 'agregar':
+              if(parseInt(campoCantidad.value) > 0){
+                prod.cantidad += parseInt(campoCantidad.value);
+                localStorage.setItem('productos', JSON.stringify(productosStorage));
+                Swal.fire({
+                  icon: 'success',
+                  text: 'Stock modificado',
+                })
+              }else{
+                Swal.fire({
+                  icon: 'error',
+                  text: 'Ingrese una cantidad válida',
+                })
+              }
+              break;
+
+            case 'eliminar':
+              if((parseInt(campoCantidad.value) <= prod.cantidad) && (parseInt(campoCantidad.value) > 0)){
+                prod.cantidad -= parseInt(campoCantidad.value);
+                localStorage.setItem('productos', JSON.stringify(productosStorage));//mando los productos
+                Swal.fire({
+                icon: 'success',
+                text: `${campoCantidad.value} unidades eliminadas`,})
+              }else{
+                Swal.fire({
+                  icon: 'error',
+                  text: 'Ingrese una cantidad válida',
+                })
+              }
+              break;
+          }//switch
+
+          agregarOEliminarStockProducto(producto, agregarOEliminar);
         }
         localStorage.setItem('mod', 'si');
         break;
       }//fin if
     }//fin for 
-
-    seccionIngreso.appendChild(btnBackAddProdExistente);
+    /*Agregar botón de ir atrás a eliminarProducto
+    seccionIngreso.appendChild(btnBackEliminarProd); */
   }
-}//fin agregarStock
+}//fin eliminarStockProducto
 
 function agegarProductoExistente(){
   let productosStorage = JSON.parse(localStorage.getItem('productos'));
@@ -299,7 +336,8 @@ function agegarProductoExistente(){
 
       if(existeProd){
         const prodEncontrado = productosStorage.find((prod) => prod.id == campoId.value);
-        agregarStock(prodEncontrado);
+        //agregarStock(prodEncontrado);
+        agregarOEliminarStockProducto(prodEncontrado, 'agregar');
       }else{
         Swal.fire({
           icon: 'error',
@@ -335,65 +373,6 @@ function agregarProducto(){
       seccionIngreso.appendChild(botonBackModStock);
   }
 }
-
-const btnBackEliminarProd = document.createElement('button');
-btnBackEliminarProd.setAttribute('class', 'btn');
-btnBackEliminarProd.textContent = "Volver";
-btnBackEliminarProd.addEventListener('click', eliminarProducto);
-
-function eliminarStockProducto(producto){
-  if(seccionIngreso != null && producto != null){
-    let productosStorage = JSON.parse(localStorage.getItem('productos'));//traigo los productos
-
-    for(const prod of productosStorage){
-      if(prod.id == producto.id){//si coincide el id, modifico la cantidad en el array del storage
-        seccionIngreso.innerHTML = '';//muestro el prod del storage
-        seccionIngreso.innerHTML += `
-        <table class="table table-dark">
-          <tbody>
-            <tr>
-              <th scope="row">${prod.id}</th>
-              <td class=""bg-black"><img src=${prod.foto} class="imgEliminar"></td>
-              <td>${prod.nombre}</td>
-              <td>${prod.cantidad}</td>
-            </tr>
-          </tbody>
-        </table>
-        `;
-        const campoCantidad = document.createElement('input');
-        campoCantidad.setAttribute('class', 'inputs');
-        campoCantidad.setAttribute('type', 'number');
-        campoCantidad.setAttribute('placeholder', 'Ingrese las unidades a eliminar');
-        seccionIngreso.appendChild(campoCantidad);
-    
-        const btnAceptarCant = document.createElement('button');
-        btnAceptarCant.setAttribute('class', 'btn');
-        btnAceptarCant.textContent = "Aceptar";
-        seccionIngreso.appendChild(btnAceptarCant);
-
-        btnAceptarCant.onclick = () =>{
-          if((parseInt(campoCantidad.value) <= prod.cantidad) && (parseInt(campoCantidad.value) > 0)){//si la cantidad es valid, modifico el prod del for encontrado
-            prod.cantidad -= parseInt(campoCantidad.value);
-            localStorage.setItem('productos', JSON.stringify(productosStorage));//mando los productos
-            Swal.fire({
-              icon: 'success',
-              text: `${campoCantidad.value} unidades eliminadas`,})
-          }else{
-            Swal.fire({
-              icon: 'error',
-              text: 'Ingrese una cantidad válida',
-            })
-          }
-          eliminarStockProducto(producto);
-        }
-        localStorage.setItem('mod', 'si');
-        break;
-      }//fin if
-    }//fin for 
-    //Agregar botón de ir atrás a eliminarProducto
-    seccionIngreso.appendChild(btnBackEliminarProd);
-  }
-}//fin eliminarStockProducto
 
 function eliminarProducto(){
   if(seccionIngreso != null){
@@ -446,7 +425,8 @@ function eliminarProducto(){
       if(existeProd){
         const prodEncontrado = prods.find((prod) => prod.id == parseInt(campoId.value));
         if(prodEncontrado.cantidad >0){
-          eliminarStockProducto(prodEncontrado);
+          agregarOEliminarStockProducto(prodEncontrado, 'eliminar');
+          //eliminarStockProducto(prodEncontrado);
         }else{
           Swal.fire({
             icon: 'error',
@@ -713,26 +693,6 @@ function login(){
     let campoContrasenia = document.getElementById("password"); 
     let selector = document.getElementById('selector');
     let botonIngresar = document.getElementById('btnIngresar');
-
-/*     let campoUsuario = document.createElement('input');
-    campoUsuario.setAttribute('class', 'inputLogin');
-    campoUsuario.setAttribute('placeholder', "Usuario");
-    campoUsuario.setAttribute('type', 'text');
-    seccionIngreso.appendChild(campoUsuario);
-
-    let campoContrasenia = document.createElement('input');
-    campoContrasenia.setAttribute('class', 'inputLogin');
-    campoContrasenia.setAttribute('placeholder', "Contraseña");
-    campoContrasenia.setAttribute('type', 'password');
-    seccionIngreso.appendChild(campoContrasenia);
-
-    seccionIngreso.innerHTML += '<select id="selector" class="btn"> <option value="Comprador">Comprador</option> <option value="Vendedor">Vendedor</option></select>';
-    let selector = document.getElementById('selector');
-
-    let botonIngresar = document.createElement('button');
-    botonIngresar.setAttribute('class', 'btn');
-    botonIngresar.textContent = 'Ingresar';
-    seccionIngreso.appendChild(botonIngresar); */
 
     botonIngresar.onclick = () =>{
       selector.value == 'Vendedor' ? validarVendedor(selector.value, campoUsuario.value, campoContrasenia.value) : validarComprador(selector.value, campoUsuario.value, campoContrasenia.value);
