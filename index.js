@@ -194,13 +194,18 @@ function agregarNuevoProducto(){
       }else{
         Swal.fire({
           icon: 'error',
-          title: 'Asegúrese de completar todos los campos antes de continuar',
+          title: 'Asegúrese de completar todos los campos correctamente antes de continuar',
         })
         agregarNuevoProducto();
       } 
     }
   } 
 }
+
+const btnBackAddProdExistente = document.createElement('button');
+btnBackAddProdExistente.setAttribute('class', 'btn');
+btnBackAddProdExistente.addEventListener('click', agegarProductoExistente);
+btnBackAddProdExistente.textContent = "Volver";
 
 function agregarStock(producto){
   if(seccionIngreso != null && producto != null){
@@ -221,7 +226,7 @@ function agregarStock(producto){
         </table>
         `;
         seccionIngreso.innerHTML += '<input type="number" class="inputs" id="cant">Ingrese la cantidad</input>';
-        seccionIngreso.innerHTML += '<button id="aceptarCant">Aceptar</button>';
+        seccionIngreso.innerHTML += '<button id="aceptarCant" class="btn">Aceptar</button>';
         let botonAceptar = document.getElementById('aceptarCant');
 
         botonAceptar.onclick = () =>{
@@ -245,6 +250,8 @@ function agregarStock(producto){
         break;
       }//fin if
     }//fin for 
+
+    seccionIngreso.appendChild(btnBackAddProdExistente);
   }
 }//fin agregarStock
 
@@ -271,26 +278,26 @@ function agegarProductoExistente(){
   seccionIngreso.innerHTML += '<button id="aceptarId" class="btn">Aceptar</button>';
   let btnAceptarId = document.getElementById('aceptarId');
 
-  let idIngresado = document.getElementById('idProd');
+  let campoId = document.getElementById('idProd');
   
   seccionIngreso.appendChild(btnBackAgregarProducto);
 
   btnAceptarId.onclick = () =>{
-    if(idIngresado.value != null && idIngresado.value.trim() != ""){
-      //busco un producto que coincida con el id ingresado
-      const prodEncontrado = productosStorage.find((prod) => prod.id == idIngresado.value);
-      if(prodEncontrado == undefined){
+      const existeProd = productosStorage.some((prod) => prod.id == campoId.value);
+
+      if(existeProd){
+        const prodEncontrado = productosStorage.find((prod) => prod.id == campoId.value);
+        agregarStock(prodEncontrado);
+      }else{
         Swal.fire({
           icon: 'error',
           text: 'El id ingresado no corresponde a un producto del stock',
         })
         agegarProductoExistente();
-      }else{
-        agregarStock(prodEncontrado);
-      }
     }// aceptarId.onclick prod existente
   }//fin agregarProductoExistente
 }
+
 function agregarProducto(){
   if(seccionIngreso != null){
     seccionIngreso.innerHTML = '';
@@ -317,14 +324,69 @@ function agregarProducto(){
   }
 }
 
+const btnBackEliminarProd = document.createElement('button');
+btnBackEliminarProd.setAttribute('class', 'btn');
+btnBackEliminarProd.textContent = "Volver";
+btnBackEliminarProd.addEventListener('click', eliminarProducto);
+
+function eliminarStockProducto(producto){
+  if(seccionIngreso != null && producto != null){
+    let productosStorage = JSON.parse(localStorage.getItem('productos'));//traigo los productos
+
+    for(const prod of productosStorage){
+      if(prod.id == producto.id){//si coincide el id, modifico la cantidad en el array del storage
+        seccionIngreso.innerHTML = '';//muestro el prod del storage
+        seccionIngreso.innerHTML += `
+        <table class="table table-dark">
+          <tbody>
+            <tr>
+              <th scope="row">${prod.id}</th>
+              <td class=""bg-black"><img src=${prod.foto} class="imgEliminar"></td>
+              <td>${prod.nombre}</td>
+              <td>${prod.cantidad}</td>
+            </tr>
+          </tbody>
+        </table>
+        `;
+        const campoCantidad = document.createElement('input');
+        campoCantidad.setAttribute('class', 'inputs');
+        campoCantidad.setAttribute('type', 'number');
+        campoCantidad.setAttribute('placeholder', 'Ingrese las unidades a eliminar');
+        seccionIngreso.appendChild(campoCantidad);
+    
+        const btnAceptarCant = document.createElement('button');
+        btnAceptarCant.setAttribute('class', 'btn');
+        btnAceptarCant.textContent = "Aceptar";
+        seccionIngreso.appendChild(btnAceptarCant);
+
+        btnAceptarCant.onclick = () =>{
+          if((parseInt(campoCantidad.value) <= prod.cantidad) && (parseInt(campoCantidad.value) > 0)){//si la cantidad es valid, modifico el prod del for encontrado
+            prod.cantidad -= parseInt(campoCantidad.value);
+            localStorage.setItem('productos', JSON.stringify(productosStorage));//mando los productos
+            Swal.fire({
+              icon: 'success',
+              text: `${campoCantidad.value} unidades eliminadas`,})
+          }else{
+            Swal.fire({
+              icon: 'error',
+              text: 'Ingrese una cantidad válida',
+            })
+          }
+          eliminarStockProducto(producto);
+        }
+        localStorage.setItem('mod', 'si');
+        break;
+      }//fin if
+    }//fin for 
+    //Agregar botón de ir atrás a eliminarProducto
+    seccionIngreso.appendChild(btnBackEliminarProd);
+  }
+}//fin eliminarStockProducto
+
 function eliminarProducto(){
-
   if(seccionIngreso != null){
-
     let existe = 'no';
-
     seccionIngreso.innerHTML = '';
-  
     let prods = JSON.parse(localStorage.getItem('productos'));
   
     seccionIngreso.innerHTML  += `
@@ -360,53 +422,22 @@ function eliminarProducto(){
   
     let campoId = document.getElementById('idProd');
     let botonAceptarId = document.getElementById('btnAceptarId');
-  
+
     botonAceptarId.onclick = () =>{
-      for(const prodStock of prods){
-        if(parseInt(campoId.value) == prodStock.id){//si coincide el id, muestro el producto y pido la cantidad a borrar
-          seccionIngreso.innerHTML = '';
-          seccionIngreso.innerHTML +=`
-          <table class="table table-dark">
-          <tbody>
-            <tr>
-              <th scope="row">${prodStock.id}</th>
-              <td class=""bg-black"><img src=${prodStock.foto} class="imgEliminar"></td>
-              <td>${prodStock.nombre}</td>
-              <td>${prodStock.cantidad}</td>
-            </tr>
-          </tbody>
-          </table>`;
-  
-          seccionIngreso.innerHTML += '<label for="cantProd">Ingrese la cantidad a borrar</label>';
-          seccionIngreso.innerHTML += '<input type="number" class="inputs" id="cantProd"></input>';
-          seccionIngreso.innerHTML += '<button id="btnAceptarCant" class="btn">Aceptar</button>';
-          
-          let campoCantidad = document.getElementById('cantProd');
-          let btnAceptarCant = document.getElementById('btnAceptarCant');
-          
-          btnAceptarCant.onclick = () =>{
-            if((parseInt(campoCantidad.value) <= prodStock.cantidad) && (parseInt(campoCantidad.value) > 0)){
-              prodStock.cantidad -= campoCantidad.value;//resto la cantidad de productos
-              localStorage.setItem('productos', JSON.stringify(prods))//modifico el storage
-              Swal.fire({
-                icon: 'success',
-                text: `${campoCantidad.value} unidades eliminadas`,
-              })
-              eliminarProducto();
-            }else{
-              Swal.fire({
-                icon: 'error',
-                text: 'Ingrese una cantidad válida',
-              })
-              eliminarProducto();
-            }
-          }
-          existe = 'si';
-          break;
+      const existeProd = prods.some((prod) => prod.id == parseInt(campoId.value));
+
+      if(existeProd){
+        const prodEncontrado = prods.find((prod) => prod.id == parseInt(campoId.value));
+        if(prodEncontrado.cantidad >0){
+          eliminarStockProducto(prodEncontrado);
+        }else{
+          Swal.fire({
+            icon: 'error',
+            text: 'El id ingresado no corresponde a un producto del stock',
+          })
+          eliminarProducto();
         }
-      }
-  
-      if(existe == 'no'){
+      }else{
         Swal.fire({
           icon: 'error',
           text: 'El id ingresado no corresponde a un producto del stock',
