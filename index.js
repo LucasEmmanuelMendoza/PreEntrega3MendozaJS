@@ -225,12 +225,19 @@ function agregarStock(producto){
           </tbody>
         </table>
         `;
-        seccionIngreso.innerHTML += '<input type="number" class="inputs" id="cant">Ingrese la cantidad</input>';
-        seccionIngreso.innerHTML += '<button id="aceptarCant" class="btn">Aceptar</button>';
-        let botonAceptar = document.getElementById('aceptarCant');
+        
+        let cantidad = document.createElement('input');
+        cantidad.setAttribute('class', 'inputs');
+        cantidad.setAttribute('placeholder', 'Ingrese la cantidad');
+        cantidad.setAttribute('type', 'number');
+        seccionIngreso.appendChild(cantidad);
+
+        let botonAceptar = document.createElement('button');
+        botonAceptar.setAttribute('class', 'btn');
+        botonAceptar.textContent = "Aceptar";
+        seccionIngreso.appendChild(botonAceptar);
 
         botonAceptar.onclick = () =>{
-          let cantidad = document.getElementById('cant');
           if(cantidad.value > 0){//si la cantidad es valid, modifico el prod del for encontrado
             prod.cantidad += parseInt(cantidad.value);
             localStorage.setItem('productos', JSON.stringify(productosStorage));//guardo el array modificado
@@ -273,13 +280,18 @@ function agegarProductoExistente(){
   </table>
     `;
   }
-
-  seccionIngreso.innerHTML += '<input type="text" class="inputs" id="idProd" placeholder="Ingrese el ID del producto"></input>';
-  seccionIngreso.innerHTML += '<button id="aceptarId" class="btn">Aceptar</button>';
-  let btnAceptarId = document.getElementById('aceptarId');
-
-  let campoId = document.getElementById('idProd');
   
+  const campoId = document.createElement('input');
+  campoId.setAttribute('class', 'inputs');
+  campoId.setAttribute('type', 'text');
+  campoId.setAttribute('placeholder', 'Ingrese el ID del producto');
+  seccionIngreso.appendChild(campoId);
+
+  const btnAceptarId = document.createElement('button');
+  btnAceptarId.setAttribute('class', 'btn');
+  btnAceptarId.textContent = "Aceptar";
+  seccionIngreso.appendChild(btnAceptarId);
+
   seccionIngreso.appendChild(btnBackAgregarProducto);
 
   btnAceptarId.onclick = () =>{
@@ -417,11 +429,16 @@ function eliminarProducto(){
       }
     }
 
-    seccionIngreso.innerHTML += '<input type="number" class="inputs" id="idProd" placeholder="Ingrese el id"></input>';
-    seccionIngreso.innerHTML += '<button id="btnAceptarId" class="btn">Aceptar</button>';
-  
-    let campoId = document.getElementById('idProd');
-    let botonAceptarId = document.getElementById('btnAceptarId');
+    let campoId = document.createElement('input');
+    campoId.setAttribute('class', 'inputs');
+    campoId.setAttribute('type', 'number');
+    campoId.setAttribute('placeholder', "Ingrese el ID");
+    seccionIngreso.appendChild(campoId);
+
+    let botonAceptarId = document.createElement('button');
+    botonAceptarId.setAttribute('class', 'btn');
+    botonAceptarId.textContent = 'Aceptar';
+    seccionIngreso.appendChild(botonAceptarId);
 
     botonAceptarId.onclick = () =>{
       const existeProd = prods.some((prod) => prod.id == parseInt(campoId.value));
@@ -453,13 +470,18 @@ function eliminarProducto(){
 function modificarStock (){
   if(seccionIngreso != null){
     seccionIngreso.innerHTML = '';
-    seccionIngreso.innerHTML += '<button id="btnAgregar" class="btn">Agregar Producto</button>'; 
-    seccionIngreso.innerHTML += '<button id="btnEliminar" class="btn">Eliminar Producto</button>'; 
+
+    const btnAgregar = document.createElement('button');
+    btnAgregar.setAttribute('class', 'btn');
+    btnAgregar.textContent = "Agregar Producto";
+    seccionIngreso.appendChild(btnAgregar);
+
+    const btnEliminar = document.createElement('button');
+    btnEliminar.setAttribute('class', 'btn');
+    btnEliminar.textContent = "Eliminar Producto";
+    seccionIngreso.appendChild(btnEliminar);
 
     seccionIngreso.appendChild(botonBack);//va al menú vendedor
-
-    btnAgregar = document.getElementById('btnAgregar');
-    btnEliminar = document.getElementById('btnEliminar');
 
     btnAgregar.addEventListener('click', agregarProducto);
 
@@ -561,70 +583,85 @@ function menuVendedor(){
     seccionIngreso.innerHTML = '';
     seccionIngreso.classList.add("gap-1");
     seccionIngreso.innerHTML += "<h1>Seleccione una opción</h1>";
-    seccionIngreso.innerHTML += '<button id="btnModStock" class="btn">Modificar Stock</button>';
-    seccionIngreso.innerHTML += '<button id="btnAumentarPrecios" class="btn">Aumentar/Disminuir Precios</button>';
-    seccionIngreso.innerHTML += '<button id="cerrarSesion" class="m-2 btn">Cerrar Sesión</button>'
-    const botonStock = document.getElementById('btnModStock');
-    const botonPrecios = document.getElementById('btnAumentarPrecios');
-    const botonCerrar = document.getElementById('cerrarSesion');
   
+    const botonStock = document.createElement('button');
+    botonStock.setAttribute('class', 'btn');
+    botonStock.textContent = "Modificar Stock";
+    seccionIngreso.appendChild(botonStock);
+
+    const botonPrecios = document.createElement('button');
+    botonPrecios.setAttribute('class', 'btn');
+    botonPrecios.textContent = "Aumentar/disminuir Precios";
+    seccionIngreso.appendChild(botonPrecios);
+
+    const botonCerrar = document.createElement('button');
+    botonCerrar.setAttribute('class', 'btn');
+    botonCerrar.textContent = "Cerrar Sesión";
+    seccionIngreso.appendChild(botonCerrar);
+
     botonStock.addEventListener('click', modificarStock);
     botonPrecios.addEventListener('click', aumentarPrecios);
     botonCerrar.addEventListener('click', cerrarSesion);
   }
 }
 
+const botonCerrar2 = document.createElement('button');
+botonCerrar2.setAttribute('class', 'btn');
+botonCerrar2.textContent = "Cerrar sesión";
+botonCerrar2.addEventListener('click', cerrarSesion);
+
 function menuComprador(){
-
   if(seccionIngreso != null){
-    seccionIngreso.innerHTML = '';
-    seccionIngreso.innerHTML +=`
-    <h4>CARRITO</h4>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <td scope="col">ID</td>
-          <td scope="col">Nombre</td>
-          <td scope="col">Cantidad</td>
-          <td scope="col">Precio</td>
-        </tr>
-      </thead>
-    </table>`
-    
     const productosGuardados = JSON.parse(localStorage.getItem('Carrito'));
-
     if(productosGuardados != null){
-      for(const producto of productosGuardados){
-        if(producto != null){
-          seccionIngreso.innerHTML +=`
-          <table class="table">
-            <tbody>
-              <tr>
-                <th scope="row">${producto.id}</th>
-                <td>${producto.nombre}</td>
-                <td>${producto.cantidad}</td>
-                <td>${producto.precio}</td>
-              </tr>
-          </table>`;
+      seccionIngreso.innerHTML = '';
+      seccionIngreso.innerHTML +=`
+      <h4>CARRITO</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <td scope="col">ID</td>
+            <td scope="col">Nombre</td>
+            <td scope="col">Cantidad</td>
+            <td scope="col">Precio</td>
+          </tr>
+        </thead>
+      </table>`
+      
+      if(productosGuardados != null){
+        for(const producto of productosGuardados){
+          if(producto != null){
+            seccionIngreso.innerHTML +=`
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th scope="row">${producto.id}</th>
+                  <td>${producto.nombre}</td>
+                  <td>${producto.cantidad}</td>
+                  <td>${producto.precio}</td>
+                </tr>
+            </table>`;
+          }
         }
+  
+        const total = productosGuardados.reduce((suma, prod) => suma + (prod.precio * prod.cantidad), 0);
+  
+        seccionIngreso.innerHTML += '<label class="text-white">Total a pagar:</label>'+total;
       }
 
-      const total = productosGuardados.reduce((suma, prod) => suma + (prod.precio * prod.cantidad), 0);
+      const botonLimpiar = document.createElement('button');
+      botonLimpiar.innerText = "Limpiar carro";
+      botonLimpiar.className = "btn m-2";
+      botonLimpiar.addEventListener('click', limpiarCarro);
+      seccionIngreso.appendChild(botonLimpiar);
+      seccionIngreso.appendChild(botonCerrar2);
 
-      seccionIngreso.innerHTML += '<label class="text-white">Total a pagar:</label>'+total;
+    }else{
+      const carritoVacio = document.createElement('h2');
+      carritoVacio.textContent = "Carrito de compras vacío";
+      seccionIngreso.appendChild(carritoVacio);
+      seccionIngreso.appendChild(botonCerrar2);
     }
-
-    seccionIngreso.innerHTML += '<button id="cerrarSesion" class="m-2">Cerrar Sesión</button>';
-    const botonCerrar2 = document.getElementById('cerrarSesion');
-    botonCerrar2.className = "btn mt-2";
-    botonCerrar2.addEventListener('click', cerrarSesion);
-
-    const botonLimpiar = document.createElement('button');
-    botonLimpiar.innerText = "Limpiar carro";
-    botonLimpiar.className = "btn m-2";
-    botonLimpiar.addEventListener('click', limpiarCarro);
-    seccionIngreso.appendChild(botonLimpiar);
-
   }
 }
 
@@ -666,20 +703,37 @@ function login(){
     seccionIngreso.innerHTML = '';
     seccionIngreso.classList.add("gap-2");
     
+/*  */
     seccionIngreso.innerHTML += '<input type="text" id="user" class="inputLogin" placeholder="Usuario"></input>';
-  
     seccionIngreso.innerHTML += '<input type="password" id="password" class="inputLogin" placeholder="Contraseña"></input>';
-   
     seccionIngreso.innerHTML += '<select id="selector" class="btn"> <option value="Comprador">Comprador</option> <option value="Vendedor">Vendedor</option></select>';
-  
     seccionIngreso.innerHTML += '<button id="btnIngresar" class="btn">Ingresar</button>';
     
     let campoUsuario = document.getElementById("user");
     let campoContrasenia = document.getElementById("password"); 
-  
     let selector = document.getElementById('selector');
     let botonIngresar = document.getElementById('btnIngresar');
-  
+
+/*     let campoUsuario = document.createElement('input');
+    campoUsuario.setAttribute('class', 'inputLogin');
+    campoUsuario.setAttribute('placeholder', "Usuario");
+    campoUsuario.setAttribute('type', 'text');
+    seccionIngreso.appendChild(campoUsuario);
+
+    let campoContrasenia = document.createElement('input');
+    campoContrasenia.setAttribute('class', 'inputLogin');
+    campoContrasenia.setAttribute('placeholder', "Contraseña");
+    campoContrasenia.setAttribute('type', 'password');
+    seccionIngreso.appendChild(campoContrasenia);
+
+    seccionIngreso.innerHTML += '<select id="selector" class="btn"> <option value="Comprador">Comprador</option> <option value="Vendedor">Vendedor</option></select>';
+    let selector = document.getElementById('selector');
+
+    let botonIngresar = document.createElement('button');
+    botonIngresar.setAttribute('class', 'btn');
+    botonIngresar.textContent = 'Ingresar';
+    seccionIngreso.appendChild(botonIngresar); */
+
     botonIngresar.onclick = () =>{
       selector.value == 'Vendedor' ? validarVendedor(selector.value, campoUsuario.value, campoContrasenia.value) : validarComprador(selector.value, campoUsuario.value, campoContrasenia.value);
     }
