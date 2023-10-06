@@ -134,6 +134,7 @@ function agregarNuevoProducto(){
     seccionIngreso.innerHTML = '';
     seccionIngreso.innerHTML += 'Agregar nuevo producto';
     
+    //nombre
     const inputNombre = document.createElement('input');
     inputNombre.setAttribute('type', 'text');
     inputNombre.setAttribute('id', 'nombreProd');
@@ -141,6 +142,18 @@ function agregarNuevoProducto(){
     inputNombre.classList.add('inputsAdd');
     seccionIngreso.appendChild(inputNombre);
 
+    const msjErrorNombre = document.createElement('medium');
+    msjErrorNombre.setAttribute('class', 'msjError');
+    seccionIngreso.appendChild(msjErrorNombre);
+    inputNombre.addEventListener('input', () =>{
+      if((inputNombre.value).length < 3){
+        msjErrorNombre.innerText = "Mínimo 3 caracteres";
+      }else{
+        msjErrorNombre.innerText = "";
+      }
+    })
+
+    //categoria
     const inputCategoria = document.createElement('input');
     inputCategoria.setAttribute('type', 'text');
     inputCategoria.setAttribute('id', 'categoriaProd');
@@ -148,13 +161,37 @@ function agregarNuevoProducto(){
     inputCategoria.classList.add('inputsAdd');
     seccionIngreso.appendChild(inputCategoria);
 
+    const msjErrorCategoria = document.createElement('medium');
+    msjErrorCategoria.setAttribute('class', 'msjError');
+    seccionIngreso.appendChild(msjErrorCategoria);
+    inputCategoria.addEventListener('input', () =>{
+      if((inputCategoria.value).length < 3){
+        msjErrorCategoria.innerText = "Mínimo 3 caracteres";
+      }else{
+        msjErrorCategoria.innerText = "";
+      }
+    })
+
+    //cantidad
     const inputCantidad = document.createElement('input');
     inputCantidad.setAttribute('type', 'number');
     inputCantidad.setAttribute('id', 'cantProd');
     inputCantidad.setAttribute('placeholder', 'Ingrese la cantidad de unidades');
     inputCantidad.classList.add('inputsAdd');
     seccionIngreso.appendChild(inputCantidad);
+
+    const msjErrorCantidad = document.createElement('medium');
+    msjErrorCantidad.setAttribute('class', 'msjError');
+    seccionIngreso.appendChild(msjErrorCantidad);
+    inputCantidad.addEventListener('input', () =>{
+      if(parseInt(inputCantidad.value) < 1){
+        msjErrorCantidad.innerText = "Mínimo una unidad";
+      }else{
+        msjErrorCantidad.innerText = "";
+      }
+    })
     
+    //precio
     const inputPrecio = document.createElement('input');
     inputPrecio.setAttribute('type', 'number');
     inputPrecio.setAttribute('id', 'precioProd');
@@ -162,6 +199,18 @@ function agregarNuevoProducto(){
     inputPrecio.classList.add('inputsAdd');
     seccionIngreso.appendChild(inputPrecio);
 
+    const msjErrorPrecio = document.createElement('medium');
+    msjErrorPrecio.setAttribute('class', 'msjError');
+    seccionIngreso.appendChild(msjErrorPrecio);
+    inputPrecio.addEventListener('input', () =>{
+      if((inputPrecio.value) < 1){
+        msjErrorPrecio.innerText = "Ingrese un precio mayor a $0";
+      }else{
+        msjErrorPrecio.innerText = "";
+      }
+    })
+
+    //foto
     const inputFoto = document.createElement('input');
     inputFoto.setAttribute('type', 'text');
     inputFoto.setAttribute('id', 'fotoProd');
@@ -180,7 +229,7 @@ function agregarNuevoProducto(){
     seccionIngreso.appendChild(btnBackAgregarProducto);
 
     btnAceptarDatos.onclick = () =>{
-      if((inputNombre.value).length > 2 && parseInt(inputCantidad.value) > 0 && (inputCategoria.value).length > 1 && parseFloat(inputPrecio.value) > 0){
+      if((inputNombre.value).length > 2 && parseInt(inputCantidad.value) > 0 && (inputCategoria.value).length > 1 && parseFloat(inputPrecio.value) > 0 &&  (inputFoto.value).length > 10){
         let prodNuevo = {id:nuevoId, nombre:inputNombre.value, foto:inputFoto.value, categoria:inputCategoria.value, precio:parseFloat(inputPrecio.value), cantidad:parseInt(inputCantidad.value)};
   
         productosStorage.push(prodNuevo);
@@ -235,11 +284,6 @@ function agregarOEliminarStockProducto(producto, agregarOEliminar){
         campoCantidad.setAttribute('class', 'inputs');
         campoCantidad.setAttribute('type', 'number');
 
-  /*       if(agregarOEliminar == 'agregar'){
-          campoCantidad.setAttribute('placeholder', 'Ingrese las unidades a agregar');
-        }else{
-          campoCantidad.setAttribute('placeholder', 'Ingrese las unidades a eliminar');
-        } */
         campoCantidad.setAttribute('placeholder', `Ingrese las unidades a ${agregarOEliminar}`);
         seccionIngreso.appendChild(campoCantidad);
     
@@ -712,4 +756,4 @@ if(localStorage.getItem('ingresoActivo') == 'no'){
       menuComprador();
       break;
   }
-}
+} 

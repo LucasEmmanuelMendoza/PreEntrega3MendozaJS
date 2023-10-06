@@ -400,6 +400,10 @@ main .container .categorias li :hover {
   padding: 1rem;
 }
 
+.msjError{
+  color: red;
+}
+
 /*  */
 
 
