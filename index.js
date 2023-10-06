@@ -59,7 +59,8 @@ function agregarAlCarrito(producto){
 }
 
 function renderizarProductos(listaProductos){
-  //console.log(listaProductos);
+  /*Crea las tarjetas que se muestran en la sección "Productos", recibiendo un array de productos como parámetro */
+  
   let cantidadActual = 0;
   for(const prod of listaProductos){
     if(seccionProductos != null){
@@ -128,6 +129,8 @@ btnBackAgregarProducto.classList.add('btn');
 btnBackAgregarProducto.addEventListener('click', agregarProducto);
 
 function agregarNuevoProducto(){
+  /*Crea un formulario para agregar un nuevo producto al storage */
+
   if(seccionIngreso != null){
     let productosStorage = JSON.parse(localStorage.getItem('productos'));
 
@@ -262,6 +265,8 @@ btnBackEliminarProd.textContent = "Volver";
 btnBackEliminarProd.addEventListener('click', eliminarProducto);
 
 function agregarOEliminarStockProducto(producto, agregarOEliminar){
+  /*Permite agregar o eliminar la cantidad de unidades de un producto, según el criterio 'agregar' o 'eliminar' recibido por parámetro*/
+
   if(seccionIngreso != null && producto != null){
     let productosStorage = JSON.parse(localStorage.getItem('productos'));//traigo los productos
 
@@ -344,6 +349,8 @@ function agregarOEliminarStockProducto(producto, agregarOEliminar){
 }//fin eliminarStockProducto
 
 function agegarProductoExistente(){
+  /*Crea un menú que pide el id para agregar stock de un producto*/
+
   let productosStorage = JSON.parse(localStorage.getItem('productos'));
   seccionIngreso.innerHTML = '';
 
@@ -393,6 +400,7 @@ function agegarProductoExistente(){
 }
 
 function agregarProducto(){
+  /*Menú para agregar un producto, nuevo o existente */
   if(seccionIngreso != null){
     seccionIngreso.innerHTML = '';
     seccionIngreso.classList.add("gap-1");
@@ -419,6 +427,7 @@ function agregarProducto(){
 }
 
 function eliminarProducto(){
+  /*Crea un menú que pide el id de un producto para disminuir su cantidad en stock */
   if(seccionIngreso != null){
     let existe = 'no';
     seccionIngreso.innerHTML = '';
@@ -492,6 +501,7 @@ function eliminarProducto(){
 }
 
 function modificarStock (){
+  /*Crea un menú para agregar o eliminar los productos en stock */
   if(seccionIngreso != null){
     seccionIngreso.innerHTML = '';
 
@@ -514,6 +524,7 @@ function modificarStock (){
 }
 
 function aumentarPrecios(){
+  /*Pide el porcentaje para aplicar aumento o descuento a los productos en stock y del carrito */
   if(seccionIngreso != null){
     seccionIngreso.innerHTML = '';
     seccionIngreso.innerHTML += '<input type="number" class="inputs" id="porcentaje" placeholder="Ingrese el porcentaje">';
@@ -583,6 +594,7 @@ function cerrarSesion(){
 }
 
 function limpiarCarro(){
+  /*Elimina el carrito de compras existente y devuelve la cantidad de unidades de cada producto al stock*/
 
   const arrProductos = JSON.parse(localStorage.getItem('productos'));
   const arrCarrito = JSON.parse(localStorage.getItem('Carrito'));
@@ -603,6 +615,7 @@ function limpiarCarro(){
 }
 
 function menuVendedor(){
+  /*Crea el menú para el vendedor*/
   if(seccionIngreso != null){
     seccionIngreso.innerHTML = '';
     seccionIngreso.classList.add("gap-1");
@@ -634,7 +647,9 @@ botonCerrar2.setAttribute('class', 'btn');
 botonCerrar2.textContent = "Cerrar sesión";
 botonCerrar2.addEventListener('click', cerrarSesion);
 
-function menuComprador(){
+function menuComprador(){ 
+   /*Crea el menú para el comprador*/
+
   if(seccionIngreso != null){
     const productosGuardados = JSON.parse(localStorage.getItem('Carrito'));
     if(productosGuardados != null){
@@ -690,6 +705,7 @@ function menuComprador(){
 }
 
 function validarVendedor(selector, campoUsuario, campoContrasenia){
+  /*Valida que los datos del vendedor sean correctos para iniciar sesión */
   if((selector == 'Vendedor') && (campoUsuario == localStorage.getItem('usuario')) && (campoContrasenia == localStorage.getItem('contrasenia'))){
     Swal.fire({
       title: 'Bienvenido',
@@ -706,6 +722,7 @@ function validarVendedor(selector, campoUsuario, campoContrasenia){
 }
 
 function validarComprador(selector, campoUsuario, campoContrasenia){
+  /*Valida que los datos del comprador sean correctos para iniciar sesión */
   if((selector == 'Comprador') && (campoUsuario == localStorage.getItem('userComprador')) && (campoContrasenia == localStorage.getItem('contraComprador'))){
     Swal.fire({
       title: 'Bienvenido',
@@ -723,6 +740,7 @@ function validarComprador(selector, campoUsuario, campoContrasenia){
 }
 
 function login(){
+  /*Crea la pantalla de registro de la sección "Cuenta" */
   if(seccionIngreso != null){
     seccionIngreso.innerHTML = '';
     seccionIngreso.classList.add("gap-2");
@@ -744,6 +762,7 @@ function login(){
   }
 }
 
+/*Muestra el menú de comprador, vendedor o login, según corresponda */
 if(localStorage.getItem('ingresoActivo') == 'no'){
     login();
 }else{
