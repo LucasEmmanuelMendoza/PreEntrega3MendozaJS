@@ -60,17 +60,16 @@ function agregarAlCarrito(producto){
 
 function renderizarProductos(listaProductos){
   /*Crea las tarjetas que se muestran en la sección "Productos", recibiendo un array de productos como parámetro */
-  
   let cantidadActual = 0;
   for(const prod of listaProductos){
-    if(seccionProductos != null){
+    if(seccionProductos != null && prod.cantidad > 0){
       seccionProductos.innerHTML += `
       <div class="tarjeta-producto">
       <img src="${prod.foto}" alt="${prod.nombre}" class="tarjeta-producto__imagen" alt="imagen de homero buda impreso en 3D">
         <div class="tarjeta-producto__cuerpo">
           <h5 class="tarjeta-producto__cuerpo__titulo">${prod.nombre}</h5>
-          <p class="tarjeta-producto__precio">$ ${prod.precio}</p>
-          <button id=${prod.id} class="btn btn1">Agregar al carro</button>
+          <p class="tarjeta-producto__precio">$${prod.precio}</p>
+          <button id=${prod.id} class="btn btn1">Agregar al carro <small>| Stock: ${prod.cantidad}</small></button>
         </div>
       </div>
       `
@@ -652,7 +651,16 @@ function menuComprador(){
   if(seccionIngreso != null){
     const productosCarrito = JSON.parse(localStorage.getItem('Carrito'));
     const productosStock = JSON.parse(localStorage.getItem('productos'));
-    if(productosCarrito != null){
+    let hayUno = false;
+
+    for(const elem of productosCarrito){
+      if(elem.cantidad > 0){//si hay por lo menos un producto en el carro con cantidad >= 1, muestro la tabla
+        hayUno = true;
+        break;
+      }
+    }
+    
+    if(productosCarrito != null && hayUno){
       seccionIngreso.innerHTML = '';
       seccionIngreso.innerHTML +=`
       <h4>CARRITO</h4>
@@ -669,7 +677,7 @@ function menuComprador(){
       </table>`
       
       for(const producto of productosCarrito){
-        if(producto != null){
+        if(producto != null && producto.cantidad > 0){
           seccionIngreso.innerHTML +=`
           <table class="table">
             <tbody>
@@ -685,37 +693,55 @@ function menuComprador(){
         }
       }
 
-      seccionIngreso.addEventListener('click', function (event) {
-        if (event.target.classList.contains('mas')) {
+      //btn agregar unidad al carrito:
+      seccionIngreso.addEventListener('click', function(event){
+        if(event.target.classList.contains('mas')){
           const productId = event.target.id;
-          // Find the product in stock
+
           const stockProduct = productosStock.find(prod => prod.id == productId);
-          
-          // Find the product in the cart
           const cartProduct = productosCarrito.find(prod => prod.id == productId);
-          
-          if (stockProduct && cartProduct) {
-            if (stockProduct.cantidad > 0) {
+          if(stockProduct && cartProduct){
+            if(stockProduct.cantidad > 0){
               stockProduct.cantidad -= 1;
               cartProduct.cantidad += 1;
-              
-              // Update the stock and cart in localStorage
+
               localStorage.setItem('productos', JSON.stringify(productosStock));
               localStorage.setItem('Carrito', JSON.stringify(productosCarrito));
-              
-              // Update the display to reflect the changes
+
               Swal.fire({
                 icon: 'success',
-                text: `Producto agregado al carro id:${productId}`,
+                text: 'Producto agregado al carro',
               });
               menuComprador();
-            } else {
+            }else{
               Swal.fire({
                 icon: 'error',
                 text: 'No hay stock disponible para este producto',
               });
               menuComprador();
             }
+          }
+        }
+      });
+
+      seccionIngreso.addEventListener('click', function(event){
+        if(event.target.classList.contains('menos')){
+          const productId = event.target.id;
+          const stockProduct = productosStock.find(prod => prod.id == productId);
+          const cartProduct = productosCarrito.find(prod => prod.id == productId);
+          
+          if(stockProduct && cartProduct){
+            stockProduct.cantidad += 1;
+            cartProduct.cantidad -= 1;
+
+            localStorage.setItem('productos', JSON.stringify(productosStock));
+            localStorage.setItem('Carrito', JSON.stringify(productosCarrito));
+
+            Swal.fire({
+              icon: 'success',
+              text: 'Producto eliminado del carro',
+            });
+            menuComprador();
           }
         }
       });
