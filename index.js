@@ -69,7 +69,7 @@ function renderizarProductos(listaProductos){
         <div class="tarjeta-producto__cuerpo">
           <h5 class="tarjeta-producto__cuerpo__titulo">${prod.nombre}</h5>
           <p class="tarjeta-producto__precio">$${prod.precio}</p>
-          <button id=${prod.id} class="btn btn1">Agregar al carro <small>| Stock: ${prod.cantidad}</small></button>
+          <button id=${prod.id} class="btn btn1">Agregar al carro</button>
         </div>
       </div>
       `
@@ -653,13 +653,15 @@ function menuComprador(){
     const productosStock = JSON.parse(localStorage.getItem('productos'));
     let hayUno = false;
 
-    for(const elem of productosCarrito){
-      if(elem.cantidad > 0){//si hay por lo menos un producto en el carro con cantidad >= 1, muestro la tabla
-        hayUno = true;
-        break;
+    if(productosCarrito != null){
+      for(const elem of productosCarrito){
+        if(elem.cantidad > 0){//si hay por lo menos un producto en el carro con cantidad >= 1, muestro la tabla
+          hayUno = true;
+          break;
+        }
       }
     }
-    
+
     if(productosCarrito != null && hayUno){
       seccionIngreso.innerHTML = '';
       seccionIngreso.innerHTML +=`
@@ -762,7 +764,6 @@ function menuComprador(){
       seccionIngreso.appendChild(carritoVacio);
       seccionIngreso.appendChild(botonCerrar2);
     }
-    
   }
 }
 
@@ -823,6 +824,54 @@ function login(){
     }
   }
 }
+
+let seccionCategorias = document.getElementById('categorias');
+function renderBotonesCategorias(){
+  if(seccionCategorias != null){
+    const prodsStock = JSON.parse(localStorage.getItem('productos'));
+    const categorias = [];
+  
+   for(const prodStock of prodsStock){
+    if(!categorias.includes(prodStock.categoria) && prodStock.categoria != '-'){
+      categorias.push(prodStock.categoria);
+    }
+   }
+
+   for(const cat of categorias){
+    seccionCategorias.innerHTML += `<button id="${cat}" class="btn btnAside m-1">${cat}</button>`;
+   }
+   
+   //botones:
+   const botones = document.getElementsByClassName('btnAside');
+   for(const btn of botones){
+    btn.addEventListener('click', () =>{
+      const arrayFiltrado = [];
+      /* alert(prodsStock.nombre);
+      let arrayFiltrado = prodsStock.filter((elem) => elem.id == btn.id); */
+      for(const elem of prodsStock){
+        if(elem.categoria == btn.id){
+          arrayFiltrado.push(elem);
+        }
+      }
+      //alert(arrayFiltrado[0]);
+      seccionProductos.innerHTML = '';
+      renderizarProductos(arrayFiltrado);
+    })
+   }
+
+   const btnSacarFiltros = document.createElement('button');
+   btnSacarFiltros.classList.add('btn', 'm-1', 'bg-danger')
+   btnSacarFiltros.textContent = "Sacar filtros";
+   seccionCategorias.appendChild(btnSacarFiltros);
+   btnSacarFiltros.addEventListener('click', () =>{
+    seccionProductos.innerHTML ='';
+    renderizarProductos(prodsStock);
+   })
+  }
+
+}
+
+renderBotonesCategorias();
 
 /*Muestra el menú de comprador, vendedor o login, según corresponda */
 if(localStorage.getItem('ingresoActivo') == 'no'){

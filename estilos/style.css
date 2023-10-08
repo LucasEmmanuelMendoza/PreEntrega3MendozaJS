@@ -325,10 +325,10 @@ main .containerProductos .sliderProductos {
 main .containerProductos .sliderProductos img {
   width: 100%;
   height: 35rem;
-}
+}/* 
 main .container .categorias {
   margin-right: 1.3rem;
-}
+} */
 main .container .categorias h1 {
   animation-name: BG-animacion;
   animation-duration: 1s;

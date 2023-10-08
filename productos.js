@@ -81,6 +81,6 @@ const productos = [
     }
 ];
 
-if(localStorage.getItem('mod') == 'no'){
+if(localStorage.getItem('mod') != 'si'){
     localStorage.setItem('productos', JSON.stringify(productos));
 }
