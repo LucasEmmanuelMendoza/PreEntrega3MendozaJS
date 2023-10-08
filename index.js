@@ -827,6 +827,7 @@ function login(){
 
 let seccionCategorias = document.getElementById('categorias');
 function renderBotonesCategorias(){
+  //
   if(seccionCategorias != null){
     const prodsStock = JSON.parse(localStorage.getItem('productos'));
     const categorias = [];
