@@ -648,11 +648,11 @@ botonCerrar2.textContent = "Cerrar sesión";
 botonCerrar2.addEventListener('click', cerrarSesion);
 
 function menuComprador(){ 
-   /*Crea el menú para el comprador*/
-
+   /*Crea el menú para el comprador: muestra el carrito de compras*/
   if(seccionIngreso != null){
-    const productosGuardados = JSON.parse(localStorage.getItem('Carrito'));
-    if(productosGuardados != null){
+    const productosCarrito = JSON.parse(localStorage.getItem('Carrito'));
+    const productosStock = JSON.parse(localStorage.getItem('productos'));
+    if(productosCarrito != null){
       seccionIngreso.innerHTML = '';
       seccionIngreso.innerHTML +=`
       <h4>CARRITO</h4>
@@ -662,31 +662,66 @@ function menuComprador(){
             <td scope="col">ID</td>
             <td scope="col">Nombre</td>
             <td scope="col">Cantidad</td>
+            <td></td>
             <td scope="col">Precio</td>
           </tr>
         </thead>
       </table>`
       
-      if(productosGuardados != null){
-        for(const producto of productosGuardados){
-          if(producto != null){
-            seccionIngreso.innerHTML +=`
-            <table class="table">
-              <tbody>
-                <tr>
-                  <th scope="row">${producto.id}</th>
-                  <td>${producto.nombre}</td>
-                  <td>${producto.cantidad}</td>
-                  <td>${producto.precio}</td>
+      for(const producto of productosCarrito){
+        if(producto != null){
+          seccionIngreso.innerHTML +=`
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">${producto.id}</th>
+                <td>${producto.nombre}</td>
+                <td>${producto.cantidad}</td>
+                <td><button id=${producto.id} class="btn mas">+</button><button id=${producto.id} class="btn menos">-</button></td>
+                <td>${producto.precio}</td>
                 </tr>
-            </table>`;
+            </tbody>
+          </table>`; 
+        }
+      }
+
+      seccionIngreso.addEventListener('click', function (event) {
+        if (event.target.classList.contains('mas')) {
+          const productId = event.target.id;
+          // Find the product in stock
+          const stockProduct = productosStock.find(prod => prod.id == productId);
+          
+          // Find the product in the cart
+          const cartProduct = productosCarrito.find(prod => prod.id == productId);
+          
+          if (stockProduct && cartProduct) {
+            if (stockProduct.cantidad > 0) {
+              stockProduct.cantidad -= 1;
+              cartProduct.cantidad += 1;
+              
+              // Update the stock and cart in localStorage
+              localStorage.setItem('productos', JSON.stringify(productosStock));
+              localStorage.setItem('Carrito', JSON.stringify(productosCarrito));
+              
+              // Update the display to reflect the changes
+              Swal.fire({
+                icon: 'success',
+                text: `Producto agregado al carro id:${productId}`,
+              });
+              menuComprador();
+            } else {
+              Swal.fire({
+                icon: 'error',
+                text: 'No hay stock disponible para este producto',
+              });
+              menuComprador();
+            }
           }
         }
-  
-        const total = productosGuardados.reduce((suma, prod) => suma + (prod.precio * prod.cantidad), 0);
-  
-        seccionIngreso.innerHTML += '<label class="text-white">Total a pagar:</label>'+total;
-      }
+      });
+
+      const total = productosCarrito.reduce((suma, prod) => suma + (prod.precio * prod.cantidad), 0);
+      seccionIngreso.innerHTML += '<label class="text-white">Total a pagar:</label>'+total;
 
       const botonLimpiar = document.createElement('button');
       botonLimpiar.innerText = "Limpiar carro";
@@ -701,6 +736,7 @@ function menuComprador(){
       seccionIngreso.appendChild(carritoVacio);
       seccionIngreso.appendChild(botonCerrar2);
     }
+    
   }
 }
 
